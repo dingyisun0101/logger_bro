@@ -1,0 +1,15 @@
+[package]
+name = "logger_bro"
+version = "0.1.0"
+edition = "2021"
+authors = ["dingyisun0122@gmail.com"]
+description = "A simple, aligned, colorful logger with [level] [obj]: message formatting."
+license = "MIT OR Apache-2.0"
+repository = "https://github.com/<yourname>/logger_bro"
+readme = "README.md"
+keywords = ["logger", "logging", "color", "cli"]
+categories = ["command-line-utilities", "development-tools::debugging"]
+
+[dependencies]
+owo-colors = "4.2"
+unicode-width = "0.2"
