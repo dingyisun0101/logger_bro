@@ -1,6 +1,6 @@
 [package]
 name = "logger_bro"
-version = "0.2.0"
+version = "0.3.0"
 edition = "2021"
 authors = ["dingyisun0122@gmail.com"]
 description = "A simple, aligned, colorful logger with [level] [obj]: message formatting."
