@@ -1,16 +1,25 @@
 # logger_bro
 
 ## Use Example
-Create an instance:
-    pub static LOGGER: Lazy<Logger> = Lazy::new(|| Logger::new(obj_txt_width));
 
-Use inside another .rs:
-    use logger_bro::{info, ...};
-    use super::config::{LOGGER};
-    
-    info!(
-        &LOGGER,
-        "obj",
-        "msg",
-        args,
-    );
+### Creating an Instance
+#### For Usage in the Same File
+```rust
+let Logger = Logger::new(obj_txt_width)
+```
+
+#### For Usage across Files
+```rust
+pub static LOGGER: Lazy<Logger> = Lazy::new(|| Logger::new(obj_txt_width));
+```
+### Logging a Message
+```rust
+use logger_bro::{info, crit, warn};
+use super::{your_file}::LOGGER;    // If it is defined elsewhere
+
+info!(
+    &LOGGER,
+    "obj",
+    "msg",
+    args,
+);
