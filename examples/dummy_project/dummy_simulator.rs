@@ -23,7 +23,7 @@ impl DummySimulator {
 
     /// Advance the simulator by one step after waiting 1-2 seconds.
     pub fn tick(&mut self) {
-        let delay_secs = rand::thread_rng().gen_range(1..=2);
+        let delay_secs = rand::rng().random_range(1..=2);
         thread::sleep(Duration::from_secs(delay_secs));
         self.step = self.step.saturating_add(1);
     }
