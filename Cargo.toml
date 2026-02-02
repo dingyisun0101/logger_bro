@@ -1,6 +1,6 @@
 [package]
 name = "logger_bro"
-version = "0.4.0"
+version = "0.4.1"
 edition = "2021"
 authors = ["dingyisun0122@gmail.com"]
 description = "A simple TUI for monitoring scientific computation tasks."
