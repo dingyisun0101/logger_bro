@@ -10,13 +10,13 @@ A small Rust library for tracking multiple task-like "clients" and rendering a s
 **Install**
 ```toml
 [dependencies]
-logger_bro = "0.3"
+logger_bro = "0.4"
 ```
 
 Disable the TUI feature if you only want the core reporting types:
 ```toml
 [dependencies]
-logger_bro = { version = "0.3", default-features = false }
+logger_bro = { version = "0.4", default-features = false }
 ```
 
 **Core Usage**
