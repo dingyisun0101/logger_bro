@@ -1,6 +1,6 @@
 /// ==============================================================================
-/// examples/dummy_project/main.rs
-/// End-to-end dummy runner: cluster -> store -> runtime.
+/// examples/dummy_project_2/main.rs
+/// End-to-end dummy runner where progress is read from outside the simulator.
 /// ==============================================================================
 
 mod dummy_cluster;
@@ -15,7 +15,7 @@ use logger_bro::prelude::runtime::*;
 use dummy_cluster::DummyCluster;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let (reporter,  mut store) = ClientStore::new();
+    let (reporter, mut store) = ClientStore::new();
 
     let cluster = DummyCluster::new(4);
     let sim_thread = thread::spawn({
