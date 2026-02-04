@@ -1,39 +1,30 @@
 /// ==============================================================================
-/// examples/dummy_project_2/dummy_task_group.rs
-/// Dummy task group where progress is observed externally.
+/// examples/dummy_project/dummy_task_group.rs
+/// Dummy task group that owns a vector of dummy tasks.
 /// ==============================================================================
-
-use logger_bro::TaskGroup;
 
 use super::dummy_task::DummyTask;
 
-/// A task group that runs multiple dummy tasks in parallel threads.
+/// A task group that launches multiple dummy tasks in parallel threads.
 #[derive(Debug)]
 pub struct DummyTaskGroup {
-    /// Number of tasks to spawn.
-    pub count: usize,
+    tasks: Vec<DummyTask>,
 }
 
 impl DummyTaskGroup {
-    /// Create a task group with `count` tasks.
-    pub fn new(count: usize) -> Self {
-        Self { count }
+    /// Create a task group with `count` tasks and a fixed iteration total.
+    pub fn new(count: usize, total_iters: u64) -> Self {
+        let tasks = (0..count)
+            .map(|i| DummyTask::new(format!("task-{i}"), total_iters))
+            .collect();
+        Self { tasks }
     }
-
 }
 
-impl TaskGroup for DummyTaskGroup {
+impl logger_bro::TaskGroup for DummyTaskGroup {
     type Task = DummyTask;
 
-    fn task_count(&self) -> usize {
-        self.count
-    }
-
-    fn build_task(&self, _index: usize) -> Self::Task {
-        DummyTask::new()
-    }
-
-    fn label_for(&self, index: usize) -> Option<String> {
-        Some(format!("task-{index}"))
+    fn tasks(self) -> Vec<Self::Task> {
+        self.tasks
     }
 }

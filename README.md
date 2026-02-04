@@ -1,59 +1,49 @@
 # logger_bro
 
-A small Rust library for tracking multiple task-like "clients" and rendering a simple TUI dashboard with aligned progress, status coloring, and timing info.
-
-**Features**
-- Client/reporting API designed for multi-threaded producers
-- In-memory store that merges partial updates safely
-- Optional TUI runtime (enabled by default) with live progress, last-update timing, and project header
+A small Rust library for running scientific workloads with a built-in TUI dashboard.
 
 **Install**
 ```toml
 [dependencies]
-logger_bro = "0.4"
+logger_bro = "0.6.0"
 ```
 
-Disable the TUI feature if you only want the core reporting types:
-```toml
-[dependencies]
-logger_bro = { version = "0.4", default-features = false }
-```
-
-**Core Usage**
+**Usage**
 ```rust
-use logger_bro::prelude::client::*;
+use logger_bro::{Task, TaskGroup};
 
-let (reporter, mut store) = ClientStore::new();
+struct SimTask {
+    label: String,
+    total_iters: u64,
+}
 
-let handle = reporter.start("worker-1", Some(100))?;
-handle.set_current(1)?;
-handle.set_current(2)?;
-handle.complete()?;
-
-store.drain();
-let snapshot = store.snapshot();
-println!("tracked: {}", snapshot.len());
-# Ok::<(), ReportError>(())
-```
-
-**TUI Runtime**
-```rust
-use logger_bro::prelude::client::*;
-use logger_bro::prelude::runtime::*;
-
-let (reporter, mut store) = ClientStore::new();
-
-std::thread::spawn(move || {
-    let handle = reporter.start("sim-1", Some(20)).unwrap();
-    for i in 1..=20 {
-        handle.set_current(i).unwrap();
-        std::thread::sleep(std::time::Duration::from_millis(200));
+impl Task for SimTask {
+    fn label(&self) -> &str {
+        &self.label
     }
-    handle.complete().unwrap();
-});
 
-let mut runtime = Runtime::new(20).project_label("Dummy Project");
-runtime.run(&mut store)?;
+    fn total_iters(&self) -> u64 {
+        self.total_iters
+    }
+
+    fn workload_per_iter(&mut self) {
+        // real scientific work here
+    }
+}
+
+struct SimGroup {
+    tasks: Vec<SimTask>,
+}
+
+impl TaskGroup for SimGroup {
+    type Task = SimTask;
+
+    fn tasks(self) -> Vec<Self::Task> {
+        self.tasks
+    }
+}
+
+SimGroup { tasks: vec![] }.launch()?;
 # Ok::<(), Box<dyn std::error::Error>>(())
 ```
 
@@ -61,13 +51,4 @@ Controls:
 - `q` begins quit confirmation
 - `y` confirms quit
 - `n` or `Esc` cancels quit
-
-**Examples**
-```bash
-cargo run --example dummy_project
-```
-
-**Notes**
-- Status colors: Completed is green, Canceled/Failed are red
-- Each client row shows time since last update
-- The project header shows elapsed time since the runtime started
+After confirmation, the process exits.

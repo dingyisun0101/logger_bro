@@ -1,6 +1,6 @@
 /// ==============================================================================
-/// examples/dummy_project_2/dummy_task.rs
-/// Dummy task where progress is stored internally and read externally.
+/// examples/dummy_project/dummy_task.rs
+/// Dummy task spec wrapper.
 /// ==============================================================================
 
 use std::thread;
@@ -8,45 +8,42 @@ use std::time::Duration;
 
 use rand::Rng;
 
-use logger_bro::Task;
-
-/// A single dummy task that only mutates internal progress.
+/// A single dummy task that defines workload and total iterations.
 #[derive(Debug)]
 pub struct DummyTask {
-    step: u64,
-    label: Option<String>,
-    total: Option<u64>,
+    pub label: String,
+    pub total_iters: u64,
 }
 
 impl DummyTask {
-    /// Create a task that reports progress via its internal state.
-    pub fn new() -> Self {
+    /// Create a dummy task with label and total iterations.
+    pub fn new<L>(label: L, total_iters: u64) -> Self
+    where
+        L: Into<String>,
+    {
         Self {
-            step: 0,
-            label: None,
-            total: None,
+            label: label.into(),
+            total_iters,
         }
     }
 
-    /// Advance the task by one step after waiting 1-2 seconds.
-    pub fn step_once(&mut self) {
+    /// Do one unit of work.
+    pub fn step(&mut self) {
         let delay_secs = rand::rng().random_range(1..=2);
         thread::sleep(Duration::from_secs(delay_secs));
-        self.step = self.step.saturating_add(1);
     }
 }
 
-impl Task for DummyTask {
-    fn tick(&mut self) {
-        self.step_once();
+impl logger_bro::Task for DummyTask {
+    fn label(&self) -> &str {
+        &self.label
     }
 
-    fn set_metadata(&mut self, label: String, total: Option<u64>) {
-        self.label = Some(label);
-        self.total = total;
+    fn total_iters(&self) -> u64 {
+        self.total_iters
     }
 
-    fn current(&self) -> Option<u64> {
-        Some(self.step)
+    fn workload_per_iter(&mut self) {
+        self.step();
     }
 }
