@@ -8,7 +8,7 @@
 /// ==============================================================================
 
 
-use std::time::Instant;
+use std::time::{Duration, Instant};
 
 /// Opaque unique identifier for a client.
 /// The identifier used for internal bookkeeping.
@@ -46,6 +46,10 @@ pub struct ClientState {
     pub start_time: Instant,
     /// Monotonic time of the most recent update to this task.
     pub last_update: Instant,
+    /// Monotonic time of the most recent progress update (current tick).
+    pub last_progress_update: Instant,
+    /// Duration of the most recently completed iteration.
+    pub last_iter_duration: Option<Duration>,
 }
 
 impl ClientState {
@@ -60,6 +64,8 @@ impl ClientState {
             current: Some(0),
             start_time: now,
             last_update: now,
+            last_progress_update: now,
+            last_iter_duration: None,
         }
     }
 
@@ -76,6 +82,8 @@ impl ClientState {
             current: None,
             start_time,
             last_update,
+            last_progress_update: last_update,
+            last_iter_duration: None,
         }
     }
 }

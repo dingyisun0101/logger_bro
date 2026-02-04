@@ -64,8 +64,17 @@ fn merge_state(existing: &mut ClientState, update: &ClientState) {
     if update.total.is_some() {
         existing.total = update.total;
     }
-    if update.current.is_some() {
-        existing.current = update.current;
+    if let Some(new_current) = update.current {
+        let prev_current = existing.current;
+        if prev_current != Some(new_current) {
+            existing.last_iter_duration = Some(
+                update
+                    .last_update
+                    .duration_since(existing.last_progress_update),
+            );
+            existing.last_progress_update = update.last_update;
+        }
+        existing.current = Some(new_current);
     }
     existing.start_time = update.start_time;
     existing.last_update = update.last_update;

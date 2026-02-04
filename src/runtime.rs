@@ -205,7 +205,10 @@ fn format_task_item(state: &crate::ClientState) -> ListItem<'_> {
     let pct_str = percent
         .map(|p| format!("{p:3}%"))
         .unwrap_or_else(|| " ??%".to_string());
-    let last_update = format_duration(state.last_update.elapsed());
+    let last_iter = state
+        .last_iter_duration
+        .map(format_duration)
+        .unwrap_or_else(|| "--".to_string());
 
     let status_style = match state.status {
         Some(crate::TaskStatus::Completed) => Style::default().fg(Color::Green),
@@ -220,7 +223,7 @@ fn format_task_item(state: &crate::ClientState) -> ListItem<'_> {
         Span::raw(" | "),
         Span::styled(status_str, status_style),
         Span::raw(format!(
-            " | {current}/{total_str} | {bar} {pct_str} | last {last_update}"
+            " | {current}/{total_str} | {bar} {pct_str} | last {last_iter}"
         )),
     ]);
 

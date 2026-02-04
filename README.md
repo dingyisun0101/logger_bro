@@ -5,7 +5,7 @@ A small Rust library for running scientific workloads with a built-in TUI dashbo
 **Install**
 ```toml
 [dependencies]
-logger_bro = "0.6.0"
+logger_bro = "0.7.0"
 ```
 
 **Usage**
